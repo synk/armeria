@@ -298,6 +298,18 @@
       <version>9.3.6.v20151106</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- distributed tracing -->
+    <dependency>
+      <groupId>com.github.kristofa</groupId>
+      <artifactId>brave-core</artifactId>
+      <version>3.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.kristofa</groupId>
+      <artifactId>brave-http</artifactId>
+      <version>3.4.0</version>
+    </dependency>
   </dependencies>
 
   <build>
