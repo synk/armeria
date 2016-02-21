@@ -28,8 +28,8 @@ import com.linecorp.armeria.common.ServiceInvocationContext;
 import com.linecorp.armeria.server.ServiceInvocationHandler;
 import com.linecorp.armeria.server.tracing.TracingServiceInvocationHandler;
 
-import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpRequest;
 
 /**
  * A {@link TracingServiceInvocationHandler} that uses HTTP headers as a container of trace data.
@@ -44,26 +44,28 @@ class HttpTracingServiceInvocationHandler extends TracingServiceInvocationHandle
     @Nullable
     protected TraceData getTraceData(ServiceInvocationContext ctx) {
         final Object request = ctx.originalRequest();
-        if (request != null && request instanceof DefaultHttpRequest) {
-            final HttpHeaders headers = ((DefaultHttpRequest) request).headers();
-
-            // The following HTTP trace header spec is based on
-            // com.github.kristofa.brave.http.HttpServerRequestAdapter#getTraceData
-
-            final String sampled = headers.get(BraveHttpHeaders.Sampled.getName());
-            if ("1".equals(sampled)) {
-                final String traceId = headers.get(BraveHttpHeaders.TraceId.getName());
-                final String spanId = headers.get(BraveHttpHeaders.SpanId.getName());
-                if (traceId != null && spanId != null) {
-                    final String parentSpanId = headers.get(BraveHttpHeaders.ParentSpanId.getName());
-                    final SpanId span = getSpanId(traceId, spanId, parentSpanId);
-                    return TraceData.builder().sample(true).spanId(span).build();
-                }
-            } else {
-                return TraceData.builder().sample(false).build();
-            }
+        if (request == null || !(request instanceof HttpRequest)) {
+            return null; // The request is not http
         }
-        return null; // The request is not traceable
+
+        final HttpHeaders headers = ((HttpRequest) request).headers();
+
+        // The following HTTP trace header spec is based on
+        // com.github.kristofa.brave.http.HttpServerRequestAdapter#getTraceData
+
+        final String sampled = headers.get(BraveHttpHeaders.Sampled.getName());
+        if ("1".equals(sampled)) {
+            final String traceId = headers.get(BraveHttpHeaders.TraceId.getName());
+            final String spanId = headers.get(BraveHttpHeaders.SpanId.getName());
+            if (traceId == null || spanId == null) {
+                return null;
+            }
+            final String parentSpanId = headers.get(BraveHttpHeaders.ParentSpanId.getName());
+            final SpanId span = getSpanId(traceId, spanId, parentSpanId);
+            return TraceData.builder().sample(true).spanId(span).build();
+        } else {
+            return TraceData.builder().sample(false).build();
+        }
     }
 
     private SpanId getSpanId(String traceId, String spanId, String parentSpanId) {

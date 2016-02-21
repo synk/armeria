@@ -55,7 +55,7 @@ public class HttpTracingServiceInvocationHandlerTest extends HttpTracingTestBase
     }
 
     @Test
-    public void testGetTraceDataIfRequestIsNotTraceable() {
+    public void testGetTraceDataIfRequestIsNotHttp() {
         ServiceInvocationContext ctx = mock(ServiceInvocationContext.class);
         when(ctx.originalRequest()).thenReturn(new Object());
 
