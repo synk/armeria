@@ -52,9 +52,9 @@ class HttpTracingRemoteInvoker extends TracingRemoteInvoker {
         }
 
         if (spanId == null) {
-            headers.add(BraveHttpHeaders.Sampled.getName(), '0');
+            headers.add(BraveHttpHeaders.Sampled.getName(), "0");
         } else {
-            headers.add(BraveHttpHeaders.Sampled.getName(), '1');
+            headers.add(BraveHttpHeaders.Sampled.getName(), "1");
             headers.add(BraveHttpHeaders.TraceId.getName(), IdConversion.convertToString(spanId.getTraceId()));
             headers.add(BraveHttpHeaders.SpanId.getName(), IdConversion.convertToString(spanId.getSpanId()));
             if (spanId.getParentSpanId() != null) {
