@@ -31,6 +31,18 @@ public abstract class HttpTracingTestBase {
         return httpHeader;
     }
 
+    public static HttpHeaders traceHeadersNotSampledFalse() {
+        HttpHeaders httpHeader = new DefaultHttpHeaders();
+        httpHeader.add(BraveHttpHeaders.Sampled.getName(), "false");
+        return httpHeader;
+    }
+
+    public static HttpHeaders traceHeadersNotSampledFalseUpperCase() {
+        HttpHeaders httpHeader = new DefaultHttpHeaders();
+        httpHeader.add(BraveHttpHeaders.Sampled.getName(), "FALSE");
+        return httpHeader;
+    }
+
     public static HttpHeaders emptyHttpHeaders() {
         return new DefaultHttpHeaders();
     }

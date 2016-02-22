@@ -32,6 +32,7 @@ import com.linecorp.armeria.common.tracing.http.HttpTracingTestBase;
 import com.linecorp.armeria.server.ServiceInvocationHandler;
 
 import io.netty.handler.codec.http.DefaultHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
 
@@ -60,7 +61,8 @@ public class HttpTracingServiceInvocationHandlerTest extends HttpTracingTestBase
         when(ctx.originalRequest()).thenReturn(new Object());
 
         TraceData traceData = serviceInvocationHandler.getTraceData(ctx);
-        assertThat(traceData, is(nullValue()));
+        assertThat(traceData.getSample(), is(nullValue()));
+        assertThat(traceData.getSpanId(), is(nullValue()));
     }
 
     @Test
@@ -72,13 +74,20 @@ public class HttpTracingServiceInvocationHandlerTest extends HttpTracingTestBase
         when(ctx.originalRequest()).thenReturn(httpRequest);
 
         TraceData traceData = serviceInvocationHandler.getTraceData(ctx);
-        assertThat(traceData.getSample(), is(false));
+        assertThat(traceData.getSample(), is(nullValue()));
+        assertThat(traceData.getSpanId(), is(nullValue()));
     }
 
     @Test
     public void testGetTraceDataIfRequestIsNotSampled() {
+        testGetTraceDataIfRequestIsNotSampled(traceHeadersNotSampled());
+        testGetTraceDataIfRequestIsNotSampled(traceHeadersNotSampledFalse());
+        testGetTraceDataIfRequestIsNotSampled(traceHeadersNotSampledFalseUpperCase());
+    }
+
+    private static void testGetTraceDataIfRequestIsNotSampled(HttpHeaders headers) {
         DefaultHttpRequest httpRequest = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "");
-        httpRequest.headers().add(traceHeadersNotSampled());
+        httpRequest.headers().add(headers);
 
         ServiceInvocationContext ctx = mock(ServiceInvocationContext.class);
         when(ctx.originalRequest()).thenReturn(httpRequest);

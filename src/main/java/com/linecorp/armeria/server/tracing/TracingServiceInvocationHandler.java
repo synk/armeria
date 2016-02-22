@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import javax.annotation.Nullable;
-
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.KeyValueAnnotation;
 import com.github.kristofa.brave.ServerRequestAdapter;
@@ -58,16 +56,14 @@ public abstract class TracingServiceInvocationHandler extends DecoratingServiceI
                        Promise<Object> promise) throws Exception {
 
         final TraceData traceData = getTraceData(ctx);
-        if (traceData != null && traceData.getSample()) {
-            final ServerRequestAdapter requestAdapter =
-                    new InternalServerRequestAdapter(ctx.method(), traceData);
 
-            final ServerSpan span = serverInterceptor.openSpan(requestAdapter);
-            if (span != null && span.getSample()) {
-                promise.addListener(future -> {
-                    serverInterceptor.closeSpan(span, createResponseAdapter(ctx, future));
-                });
-            }
+        final ServerRequestAdapter requestAdapter = new InternalServerRequestAdapter(ctx.method(), traceData);
+
+        final ServerSpan span = serverInterceptor.openSpan(requestAdapter);
+        if (span != null && span.getSample()) {
+            promise.addListener(future -> {
+                serverInterceptor.closeSpan(span, createResponseAdapter(ctx, future));
+            });
         }
         try {
             super.invoke(ctx, blockingTaskExecutor, promise);
@@ -79,9 +75,8 @@ public abstract class TracingServiceInvocationHandler extends DecoratingServiceI
     /**
      * Gets a {@link TraceData} from the specified {@link ServiceInvocationContext}.
      *
-     * @return the {@link TraceData}, or null if the {@link ServiceInvocationContext} is not traceable.
+     * @return the {@link TraceData}.
      */
-    @Nullable
     protected abstract TraceData getTraceData(ServiceInvocationContext ctx);
 
     /**

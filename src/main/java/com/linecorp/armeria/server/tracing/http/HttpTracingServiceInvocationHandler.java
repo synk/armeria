@@ -16,8 +16,6 @@
 
 package com.linecorp.armeria.server.tracing.http;
 
-import javax.annotation.Nullable;
-
 import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.IdConversion;
 import com.github.kristofa.brave.SpanId;
@@ -41,11 +39,10 @@ class HttpTracingServiceInvocationHandler extends TracingServiceInvocationHandle
     }
 
     @Override
-    @Nullable
     protected TraceData getTraceData(ServiceInvocationContext ctx) {
         final Object request = ctx.originalRequest();
         if (request == null || !(request instanceof HttpRequest)) {
-            return null; // The request is not http
+            return TraceData.builder().build();
         }
 
         final HttpHeaders headers = ((HttpRequest) request).headers();
@@ -54,17 +51,19 @@ class HttpTracingServiceInvocationHandler extends TracingServiceInvocationHandle
         // com.github.kristofa.brave.http.HttpServerRequestAdapter#getTraceData
 
         final String sampled = headers.get(BraveHttpHeaders.Sampled.getName());
-        if ("1".equals(sampled)) {
+        if (sampled == null) {
+            return TraceData.builder().build();
+        } else if ("0".equals(sampled) || "false".equals(sampled.toLowerCase())) {
+            return TraceData.builder().sample(false).build();
+        } else {
             final String traceId = headers.get(BraveHttpHeaders.TraceId.getName());
             final String spanId = headers.get(BraveHttpHeaders.SpanId.getName());
             if (traceId == null || spanId == null) {
-                return null;
+                return TraceData.builder().build();
             }
             final String parentSpanId = headers.get(BraveHttpHeaders.ParentSpanId.getName());
             final SpanId span = getSpanId(traceId, spanId, parentSpanId);
             return TraceData.builder().sample(true).spanId(span).build();
-        } else {
-            return TraceData.builder().sample(false).build();
         }
     }
 
