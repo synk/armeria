@@ -64,13 +64,14 @@ public abstract class TracingRemoteInvoker extends DecoratingRemoteInvoker {
         final InternalClientRequestAdapter requestAdapter = new InternalClientRequestAdapter(method.getName());
 
         final Span span = clientInterceptor.openSpan(requestAdapter);
-        if (span == null) {
-            // skip tracing
-            return super.invoke(uri, options, codec, method, args);
-        }
 
         // new client options with trace data
-        final ClientOptions newOptions = putTraceData(options, requestAdapter.getSpanId());
+        final ClientOptions traceAwareOptions = putTraceData(options, requestAdapter.getSpanId());
+
+        if (span == null) {
+            // skip tracing
+            return super.invoke(uri, traceAwareOptions, codec, method, args);
+        }
 
         // The actual remote invocation is done asynchronously.
         // So we have to clear the span from current thread.
@@ -78,7 +79,7 @@ public abstract class TracingRemoteInvoker extends DecoratingRemoteInvoker {
 
         Future<T> result = null;
         try {
-            result = super.invoke(uri, newOptions, codec, method, args);
+            result = super.invoke(uri, traceAwareOptions, codec, method, args);
             result.addListener(future -> {
                 clientInterceptor.closeSpan(span,
                                             createResponseAdapter(uri, options, codec, method, args, future));
