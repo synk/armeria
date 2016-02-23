@@ -1,4 +1,4 @@
-package com.linecorp.armeria.common.tracing.http;
+package com.linecorp.armeria.common.tracing;
 
 import com.github.kristofa.brave.SpanId;
 import com.github.kristofa.brave.http.BraveHttpHeaders;

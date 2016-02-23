@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.linecorp.armeria.client.tracing.http;
+package com.linecorp.armeria.client.tracing;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -29,7 +29,7 @@ import com.github.kristofa.brave.Brave;
 import com.linecorp.armeria.client.ClientOption;
 import com.linecorp.armeria.client.ClientOptions;
 import com.linecorp.armeria.client.RemoteInvoker;
-import com.linecorp.armeria.common.tracing.http.HttpTracingTestBase;
+import com.linecorp.armeria.common.tracing.HttpTracingTestBase;
 
 import io.netty.handler.codec.http.HttpHeaders;
 

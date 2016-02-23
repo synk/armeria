@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.linecorp.armeria.server.tracing.http;
+package com.linecorp.armeria.server.tracing;
 
 import java.util.function.Function;
 
@@ -25,7 +25,7 @@ import com.linecorp.armeria.server.Service;
 
 /**
  * A {@link Service} decorator that traces HTTP-based service invocations.
- * <p/>
+ * <p>
  * This decorator retrieves trace data from HTTP headers. The specifications of header names and its values
  * correspond to <a href="http://zipkin.io/">zipkin</a>.
  */

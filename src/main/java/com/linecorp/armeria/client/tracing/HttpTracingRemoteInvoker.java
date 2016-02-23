@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.linecorp.armeria.client.tracing.http;
+package com.linecorp.armeria.client.tracing;
 
 import java.util.Optional;
 
@@ -28,7 +28,6 @@ import com.github.kristofa.brave.http.BraveHttpHeaders;
 import com.linecorp.armeria.client.ClientOption;
 import com.linecorp.armeria.client.ClientOptions;
 import com.linecorp.armeria.client.RemoteInvoker;
-import com.linecorp.armeria.client.tracing.TracingRemoteInvoker;
 
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaders;

@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.linecorp.armeria.client.tracing.http;
+package com.linecorp.armeria.client.tracing;
 
 import java.util.function.Function;
 

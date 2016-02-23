@@ -14,7 +14,7 @@
  * under the License.
  */
 
-package com.linecorp.armeria.server.tracing.http;
+package com.linecorp.armeria.server.tracing;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -28,7 +28,7 @@ import com.github.kristofa.brave.Brave;
 import com.github.kristofa.brave.TraceData;
 
 import com.linecorp.armeria.common.ServiceInvocationContext;
-import com.linecorp.armeria.common.tracing.http.HttpTracingTestBase;
+import com.linecorp.armeria.common.tracing.HttpTracingTestBase;
 import com.linecorp.armeria.server.ServiceInvocationHandler;
 
 import io.netty.handler.codec.http.DefaultHttpRequest;
