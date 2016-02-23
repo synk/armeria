@@ -54,11 +54,11 @@ public abstract class TracingRemoteInvoker extends DecoratingRemoteInvoker {
     }
 
     @Override
-    public <T> Future<T> invoke(URI uri,
-                                ClientOptions options,
-                                ClientCodec codec,
-                                Method method,
-                                Object[] args) throws Exception {
+    public final <T> Future<T> invoke(URI uri,
+                                      ClientOptions options,
+                                      ClientCodec codec,
+                                      Method method,
+                                      Object[] args) throws Exception {
 
         // create new request adapter to catch generated spanId
         final InternalClientRequestAdapter requestAdapter = new InternalClientRequestAdapter(method.getName());

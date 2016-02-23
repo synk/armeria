@@ -51,9 +51,9 @@ public abstract class TracingServiceInvocationHandler extends DecoratingServiceI
     }
 
     @Override
-    public void invoke(ServiceInvocationContext ctx,
-                       Executor blockingTaskExecutor,
-                       Promise<Object> promise) throws Exception {
+    public final void invoke(ServiceInvocationContext ctx,
+                             Executor blockingTaskExecutor,
+                             Promise<Object> promise) throws Exception {
 
         final TraceData traceData = getTraceData(ctx);
 
