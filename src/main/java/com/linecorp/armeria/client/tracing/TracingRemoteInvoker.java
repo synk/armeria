@@ -106,19 +106,22 @@ public abstract class TracingRemoteInvoker extends DecoratingRemoteInvoker {
                                                        Method method, Object[] args,
                                                        @Nullable Future<? super T> result) {
 
-        final List<KeyValueAnnotation> annotations = new ArrayList<>();
+        final KeyValueAnnotation clientUriAnnotation = KeyValueAnnotation.create(
+                "client.uri", uri.toString() + '#' + method.getName());
 
-        annotations.add(KeyValueAnnotation.create("client.uri", uri.toString() + '#' + method.getName()));
-
-        if (result != null && result.isDone()) {
-            final String resultText = result.isSuccess() ? "success" : "failure";
-            annotations.add(KeyValueAnnotation.create("client.result", resultText));
-
-            if (result.cause() != null) {
-                annotations.add(KeyValueAnnotation.create("client.cause", result.cause().getMessage()));
-            }
+        if (result == null || !result.isDone()) {
+            return Collections.singletonList(clientUriAnnotation);
         }
 
+        final List<KeyValueAnnotation> annotations = new ArrayList<>(3);
+        annotations.add(clientUriAnnotation);
+
+        final String clientResultText = result.isSuccess() ? "success" : "failure";
+        annotations.add(KeyValueAnnotation.create("client.result", clientResultText));
+
+        if (result.cause() != null) {
+            annotations.add(KeyValueAnnotation.create("client.cause", result.cause().getMessage()));
+        }
         return annotations;
     }
 
