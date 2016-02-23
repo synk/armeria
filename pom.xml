@@ -95,6 +95,7 @@
     <thrift.source.test>${project.basedir}/src/test/thrift</thrift.source.test>
     <thrift.generated.main>${project.build.directory}/generated-sources</thrift.generated.main>
     <thrift.generated.test>${project.build.directory}/generated-test-sources</thrift.generated.test>
+    <brave.version>3.4.0</brave.version>
   </properties>
 
   <dependencies>
@@ -303,12 +304,12 @@
     <dependency>
       <groupId>com.github.kristofa</groupId>
       <artifactId>brave-core</artifactId>
-      <version>3.4.0</version>
+      <version>${brave.version}</version>
     </dependency>
     <dependency>
       <groupId>com.github.kristofa</groupId>
       <artifactId>brave-http</artifactId>
-      <version>3.4.0</version>
+      <version>${brave.version}</version>
     </dependency>
   </dependencies>
 
